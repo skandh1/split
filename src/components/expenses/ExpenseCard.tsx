@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import { ArrowRight } from 'lucide-react'
 import {
@@ -17,13 +16,6 @@ interface ExpenseCardProps {
   participants: string[]
 }
 
-// Mock database query function
-async function fetchUserNameById(friends: string): Promise<string> {
-  // Replace this with actual database call logic
-  const userNames = { "user1": "Alice", "user2": "Bob", "user3": "Charlie" }
-  return userNames[friends] || "Unknown User"
-}
-
 export default function ExpenseCard({
   amount,
   description,
@@ -31,25 +23,12 @@ export default function ExpenseCard({
   date,
   participants,
 }: ExpenseCardProps) {
-  const [participantNames, setParticipantNames] = useState<string[]>([])
-
-  useEffect(() => {
-    async function fetchParticipants() {
-      const names = await Promise.all(
-        participants.map((participant) => fetchUserNameById(participant))
-      )
-      setParticipantNames(names)
-    }
-
-    fetchParticipants()
-  }, [participants])
-
   const formattedAmount = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
   }).format(amount)
 
-  const otherParticipants = participantNames.filter((name, index) => participants[index] !== paidBy)
+  const otherParticipants = participants.filter(participant => participant !== paidBy)
 
   return (
     <Card>
@@ -59,12 +38,12 @@ export default function ExpenseCard({
           <span className="text-xl font-bold">{formattedAmount}</span>
         </CardTitle>
         <CardDescription>
-          Paid by {participantNames[participants.indexOf(paidBy)] || paidBy} • {formatDistanceToNow(date, { addSuffix: true })}
+          Paid by {paidBy} • {formatDistanceToNow(date, { addSuffix: true })}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span>{participantNames[participants.indexOf(paidBy)] || paidBy}</span>
+          <span>{paidBy}</span>
           <ArrowRight className="h-4 w-4" />
           {otherParticipants.length > 0 ? (
             <>
