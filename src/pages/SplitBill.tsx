@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -51,7 +51,7 @@ export default function SplitBill() {
     },
   });
 
-  useState(() => {
+  useEffect(() => {
     const fetchFriends = async () => {
       if (!currentUser) return;
 
@@ -81,7 +81,7 @@ export default function SplitBill() {
     };
 
     fetchFriends();
-  }, [currentUser]);
+  }, []);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!currentUser) return;

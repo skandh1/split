@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  async function signup(email: string, password: string, username: string) {
+  async function signup(email: string, password: string, username: string): Promise<void> {
     const { user } = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(user, { displayName: username });
     await setDoc(doc(db, 'users', user.uid), {
@@ -38,9 +38,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       expenses: []
     });
   }
-
-  function login(email: string, password: string) {
-    return signInWithEmailAndPassword(auth, email, password);
+  function login(email: string, password: string): Promise<void> {
+    return signInWithEmailAndPassword(auth, email, password).then(() => undefined);
   }
 
   function logout() {
